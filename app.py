@@ -134,9 +134,11 @@ def people():
   ax.imshow(im)
   for i in r1['rois']:
     y1, x1, y2, x2 = i
+    x=(x1+x2)//2
+    # y=(y1+y2)//2
     print(x1, y1, x2, y2)
     # rect = patches.Rectangle((x1+(x2 - x1)/2, y1), 50, 50,linewidth=1,edgecolor='r',facecolor='none')
-    image = cv2.rectangle(image,(x1, y1), (x2, y2),(255,0,0),1)
+    image = cv2.rectangle(image,(x, y1), (x+50, y1+50),(0,255,0),2)
     # ax.add_patch(rect)
   (50,100),40,30
   # Add the patch to the Axes
