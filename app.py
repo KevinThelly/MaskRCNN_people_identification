@@ -21,7 +21,7 @@ cwd = os.getcwd()
 print("------------------------------")
 print(cwd)
 
-os.chdir("./coco")
+os.chdir("../coco")
 
 print("------------------------------")
 print(os.getcwd())
@@ -84,7 +84,7 @@ def people():
   os.chdir("./images")
   print("----------------")
   print(os.getcwd())
-  image = cv2.imread('mohan.jpg')
+  image = cv2.imread('live.jpg')
   
   os.chdir("../")
   print("----------------")
