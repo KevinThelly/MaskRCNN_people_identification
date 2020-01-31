@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import pickle 
 import cv2
+import json
 from flask import Flask, render_template, jsonify, request, redirect, url_for, flash
 
 # os.chdir("C:/Users/Kevin Thelly/Documents/College/ifp_2/Mask_RCNN")
@@ -89,8 +90,8 @@ def people():
   os.chdir("../")
   print("----------------")
   print(os.getcwd())
-  # dimensions=image.shape
-  # print(dimensions)
+  dimensions=image.shape
+  print(dimensions)
   # Run detection
   print("-----------------------------------")
   print("Image read classbench")
@@ -111,10 +112,7 @@ def people():
       scores.append(r['scores'][i])
       masks.append(r['masks'][i])
       class_ids.append(r['class_ids'][i])
-  # rois=np.asarray(rois)
-  # scores=np.asarray(scores)
-  # masks=np.asarray(masks)
-  # class_ids=np.asarray(class_ids)
+
   r1={}
   r1['rois']=rois
   r1['scores']=scores
@@ -122,49 +120,46 @@ def people():
   r1['class_ids']=class_ids
   print("--------------------------------------------------")
   print("Number of People :",count)
-  # ax = get_ax(1)
-  # visualize.display_instances(image, r1['rois'], r1['masks'], r1['class_ids'], ['person'], r1['scores'],ax=ax)
+  
 
   im = np.array(image)
 
   # Create figure and axes
-  fig,ax = plt.subplots(1)
+  # fig,ax = plt.subplots(1)
 
-  # Display the image
-  ax.imshow(im)
+  coordinates=[]
+
   for i in r1['rois']:
     y1, x1, y2, x2 = i
     x=(x1+x2)//2
     # y=(y1+y2)//2
-    print(x1, y1, x2, y2)
-    # rect = patches.Rectangle((x1+(x2 - x1)/2, y1), 50, 50,linewidth=1,edgecolor='r',facecolor='none')
-    image = cv2.rectangle(image,(x, y1), (x+50, y1+50),(0,255,0),2)
-    # ax.add_patch(rect)
-  (50,100),40,30
-  # Add the patch to the Axes
-  # fig_size = plt.rcParams["figure.figsize"]
-  # print(fig_size)
-  # os.chdir("")
-  # cv2.imwrite('C:/Users/Kevin Thelly/Documents/College/ifp_2/Mask_RCNN/ifp_model/image.png',bbox_inches='tight', pad_inches=-0.5,orientation= 'landscape')
-  cv2.imwrite('./devimages/image.png',image)
-  # png('C:/Users/Kevin Thelly/Documents/College/ifp_2/Mask_RCNN/ifp_model/image.png', width = 800, height = 600)
-  # plt.savefig('C:/Users/Kevin Thelly/Documents/College/ifp_2/Mask_RCNN/ifp_model/foo.png', bbox_inches='tight')
-  # os.chdir("C:/Users/Kevin Thelly/Documents/College/ifp_2/Mask_RCNN//ifp/Server")
-  # plt.savefig('foo.png')
-  # plt.show()
+    str1= [str(x),str(y1),str(x+30),str(y1+30)] 
+    coordinates.append(str1)
+    print(coordinates)
+    image = cv2.rectangle(image,(x, y1), (x+30, y1+30),(0,255,0),2)
+  cv2.imwrite('./output/image.jpg',image)
   print("---------------------------------")
   print("function done")
-print("-----------------------------------------")
-print("model done")
+  # File = open("./output/out.txt", "w")
+      
+  x = {
+    "coords": coordinates,
+    "count": str(count),
+    "width": str(image.shape[1]),
+    "height":str(image.shape[0])
+  }
+  print(x)
+  print(type(x['width']))
+  # import pdb; pdb.set_trace()
+  y = json.dumps(dict(x))
+  # for line in coordinates:
+  #   # write line to output file
+  #   print(str(line))
+  #   File.write(str(line))
+  #   File.write("\n")
+  # File.close()
+  with open('./output/data.json', 'w') as f:
+    json.dump(y, f, ensure_ascii=False, indent=4)
 
 
-# app = Flask(__name__)
-# app.debug=True
-
-# @app.route('/',methods=['GET','POST'])
-# def run_model():
-#   # people()
-#   return("done")
-
-# app.run()
 people()

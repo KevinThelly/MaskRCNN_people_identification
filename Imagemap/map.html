@@ -1,0 +1,36 @@
+
+
+<script>
+
+
+function create(div){
+
+return function(coords,url,width,height){
+var img=document.createElement("img");
+img.src=url;
+div.appendChild(img);
+var home=document.createElement("map");
+home.name="master";
+let payload=coords.map((x,i)=>{
+    let area=document.createElement("area");
+    area.coords=x.join()
+    area.shape="rect";
+    area.href="http://www.google.com"
+    area.setAttribute("data-id",i);
+   area.addEventListener("click",(e)=>{
+        e.preventDefault();
+        console.log(e.target.getAttribute("data-id"));
+    })
+    return area;
+});
+payload.forEach(element => {
+    home.appendChild(element)
+});
+img.setAttribute("usemap","#master");
+div.appendChild(home);
+console.log(home);
+}
+}
+
+
+</script>
