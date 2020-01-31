@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 import pickle 
 import cv2
+import time
 import json
 from flask import Flask, render_template, jsonify, request, redirect, url_for, flash
 
@@ -131,13 +132,15 @@ def people():
 
   for i in r1['rois']:
     y1, x1, y2, x2 = i
-    x=(x1+x2)//2
+    x=(x1+x2)//2 - 10
     # y=(y1+y2)//2
-    str1= [str(x),str(y1),str(x+30),str(y1+30)] 
+    str1= [str(x),str(y1),str(x+20),str(y1+20)] 
     coordinates.append(str1)
     print(coordinates)
-    image = cv2.rectangle(image,(x, y1), (x+30, y1+30),(0,255,0),2)
-  cv2.imwrite('./output/image.jpg',image)
+    image = cv2.rectangle(image,(x, y1), (x+20, y1+20),(0,255,0),2)
+    
+  millis=int(round(time.time()*1000))
+  cv2.imwrite('./output/image'+str(millis)+'.jpg',image)
   print("---------------------------------")
   print("function done")
   # File = open("./output/out.txt", "w")

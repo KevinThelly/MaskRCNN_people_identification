@@ -1,16 +1,18 @@
 const puputeer=require('puppeteer');
 const request=require('request');
-const firebase=require('firebase');
+var firebase = require('firebase-admin');    
+var serviceAccount = require('./ifp007-871c5ef9dc83.json');
+
 firebase.initializeApp({
-    apiKey: "AIzaSyBRGMUv5IF0kmquf_Z98i8g-5MYq4wrHnc",
-    authDomain: "ifp007.firebaseapp.com",
-    databaseURL: "https://ifp007.firebaseio.com",
-    projectId: "ifp007",
-    storageBucket: "ifp007.appspot.com",
-    messagingSenderId: "424387444514",
-    appId: "1:424387444514:web:433ce7288ec704b249ef7b"
-  });
+  credential: firebase.credential.cert(serviceAccount),
+  databaseURL: 'https://ifp007.firebaseio.com'
+});
+
 db = firebase.firestore();
+var mybucket=firebase.storage().bucket("ifp007.appspot.com");
+
+
+
 const fs=require('fs');
 let {PythonShell} = require('python-shell');
 
@@ -28,6 +30,7 @@ db.collection("switch").doc("status").onSnapshot((doc)=>{
 
 async function crawl(){
     console.log("entered");
+
 
    
 let url="http://mipcm.com/"
@@ -71,10 +74,24 @@ page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 
         }
     
         console.log("The file was saved!");
+        
     });
-    PythonShell.run('../app.py', null, function (err) {
+    PythonShell.run('../app.py', null, async function (err) {
         if (err) throw err;
         console.log('finished');
+            fs.readdir('../output/',async function(err,d){
+                
+                let image=d.filter(x=>~x.indexOf(".jpg"))[0];
+                let response=await mybucket.upload("../output/"+image);
+                console.log(response);
+                let link="https://storage.googleapis.com/ifp007.appspot.com/"+image;
+                console.log(link);
+                fs.unlinkSync("../output/"+image);
+               
+
+            
+            })
+                  
       });
     browser.close();
 }
