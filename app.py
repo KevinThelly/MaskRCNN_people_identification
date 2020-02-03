@@ -132,12 +132,12 @@ def people():
 
   for i in r1['rois']:
     y1, x1, y2, x2 = i
-    x=(x1+x2)//2 - 10
+    x=(x1+x2)//2
     # y=(y1+y2)//2
     str1= [str(x),str(y1),str(x+20),str(y1+20)] 
     coordinates.append(str1)
     print(coordinates)
-    image = cv2.rectangle(image,(x, y1), (x+20, y1+20),(0,255,0),2)
+    image = cv2.rectangle(image,(x, y1), (x+20, y1+20),(0,255,0),1)
     
   millis=int(round(time.time()*1000))
   cv2.imwrite('./output/image'+str(millis)+'.jpg',image)

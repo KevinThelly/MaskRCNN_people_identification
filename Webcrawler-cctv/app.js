@@ -16,13 +16,11 @@ var mybucket=firebase.storage().bucket("ifp007.appspot.com");
 const fs=require('fs');
 let {PythonShell} = require('python-shell');
 
-db.collection("switch").doc("status").onSnapshot((doc)=>{
+db.collection("livecosplay").doc("doc").onSnapshot((doc)=>{
     console.log(doc.data());
-    if(doc.data().state){
+    if(doc.data().status){
         crawl();
-        db.collection("switch").doc("status").set({
-            state:false
-        })
+
     }
          
 })
@@ -86,14 +84,27 @@ page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 
                 console.log(response);
                 let link="https://storage.googleapis.com/ifp007.appspot.com/"+image;
                 console.log(link);
+                var json=JSON.parse(require("../output/data.json"));
+                console.log(json["coords"]);
+                var coords=JSON.stringify(json["coords"]);
+                console.log(coords);
+                var count=json["count"];
+                var width=json["width"];
+                var height=json["height"];
+                console.log(coords,count,width,height)
+    
+
+                db.collection("livecosplay").doc("doc").set({
+                    url:link,
+                    imageset:true,
+                    status:false,coords,count,width,height
+                },{merge:true})
                 fs.unlinkSync("../output/"+image);
                
-
             
             })
                   
       });
-    browser.close();
 }
 
 
